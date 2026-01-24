@@ -3,11 +3,12 @@
 if not getgenv().IS_RATTED then
 	for _, Table in pairs(getgc(true)) do
 		if typeof(Table) == "table" then
-			local Function = rawget(Table, "Detected")
+			local DetectedFunction = rawget(Table, "Detected")
+			local RLockedFunction = rawget(Table, "RLocked")
 
-			if typeof(Function) == "function" then
-				hookfunction(Function, function() return task.wait(9e9) end)
-				break
+			if typeof(DetectedFunction) == "function" and RLockedFunction then
+				hookfunc(DetectedFunction, function(This, Defines, If) return task.wait(9e9) end)
+				hookfunc(RLockedFunction, function(We, Get, Detected) return task.wait(9e9) end)
 			end
 		end
 	end
