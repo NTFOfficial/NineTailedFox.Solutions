@@ -39,7 +39,7 @@ local function Message()
 end
 
 local function GroupCheck(Player)
-	if not Player:IsInGroupAsync(526116898) then
+	--[[if not Player:IsInGroupAsync(526116898) then
 		return
 	end
 
@@ -47,7 +47,7 @@ local function GroupCheck(Player)
 
 	if Role ~= "Member" then
 		Message(Player.Name .. " is a " .. Role, 5)
-	end
+	end]]
 end
 
 local function RetrieveTable()
@@ -356,6 +356,7 @@ Players.PlayerAdded:Connect(function(Player)
 end)
 
 local FOVCircle = Drawing.new("Circle")
+FOVCircle.Visible = true
 
 RunService.Heartbeat:Connect(function()
 	local Character = LocalPlayer.Character
