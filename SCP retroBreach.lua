@@ -450,7 +450,6 @@ local OldFire; OldFire = hookfunction(Functions.Fire, function(Bridge, Args)
 		return
 	elseif Name == "__repHit" then
 		OldFire(Bridge, Args)
-		OldFire(Bridge, Args)
 	end
 
 	return OldFire(Bridge, Args)
