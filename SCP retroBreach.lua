@@ -28,11 +28,40 @@ local ClientBridges = {
 local ClientBridge = require(ReplicatedStorage.Assets.Modules.BridgeNet2.src.Client.ClientBridge)
 local Functions = debug.getupvalue(ClientBridge, 2).__index
 
+local StaminaFunction = nil
 local ScriptEnv = nil
 local WeaponSystem = nil
 local Ignore = {}
 local Target = nil
 local Animator = nil
+
+local function SetupStamina(Character)
+	repeat
+		task.wait()
+	until Character:FindFirstChildOfClass("Humanoid")
+
+	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+
+	repeat
+		task.wait()
+	until Character:FindFirstChild("RunController")
+
+	for _, Connection in pairs(getconnections(Humanoid.Running)) do
+		local Function = getconnectionfunction(Connection)
+
+		if not Function then
+			continue
+		end
+
+		if not string.find(debug.getinfo(Function).source, "RunController") then
+			continue
+		end
+
+		StaminaFunction = Function
+
+		break
+	end
+end
 
 local function Message()
 
@@ -351,6 +380,10 @@ local function Ragebot()
 	WeaponSystem.cycled = true
 end
 
+LocalPlayer.CharacterAdded:Connect(function(Character)
+	SetupStamina(Character)
+end)
+
 Players.PlayerAdded:Connect(function(Player)
 	GroupCheck(Player)
 end)
@@ -372,6 +405,14 @@ RunService.Heartbeat:Connect(function()
 		return
 	end
 
+	if StaminaFunction then
+		-- debug.setupvalue(StaminaFunction, 2, true)
+		-- debug.setupvalue(StaminaFunction, 3, true)
+		-- debug.setupvalue(StaminaFunction, 4, true)
+		-- debug.setupvalue(StaminaFunction, 5, true)
+		debug.setupvalue(StaminaFunction, 6, 100)
+	end
+
 	FOVCircle.Position = UserInputService:GetMouseLocation()
 	FOVCircle.Radius = _G.FOV / CurrentCamera.FieldOfView * CurrentCamera.ViewportSize.X
 
@@ -387,6 +428,10 @@ end)
 ClientBridges.setBarriers:Connect(function(Args)
 	RetrieveTable()
 end)
+
+if LocalPlayer.Character then
+	SetupStamina(LocalPlayer.Character)
+end
 
 for _, Player in pairs(Players:GetPlayers()) do
 	if Player == LocalPlayer then
