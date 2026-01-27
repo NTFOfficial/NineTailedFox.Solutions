@@ -6,5 +6,5 @@ local Start = "https://raw.githubusercontent.com/NTFOfficial/NineTailedFox.Solut
 local Game = SupportedGames[game.PlaceId]
 
 if Game then
-    loadstring(game:HttpGet(Start .. Game))()
+    loadstring(game:HttpGet(Start .. Game .. ".lua"))()
 end
