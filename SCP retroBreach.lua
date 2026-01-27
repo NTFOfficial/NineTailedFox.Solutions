@@ -373,7 +373,7 @@ RunService.Heartbeat:Connect(function()
 	end
 
 	FOVCircle.Position = UserInputService:GetMouseLocation()
-	FOVCircle.Radius = _G.FOV
+	FOVCircle.Radius = _G.FOV / CurrentCamera.FieldOfView * CurrentCamera.ViewportSize.X
 
 	Target = GetTarget()
 
