@@ -1,6 +1,6 @@
 -- Sponsored by ntfofficial
 
-_G.FOV = 50
+_G.FOV = 5
 
 local Workspace = cloneref(game:GetService("Workspace"))
 local Players = cloneref(game:GetService("Players"))
