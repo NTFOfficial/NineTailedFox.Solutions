@@ -1,5 +1,7 @@
 -- Sponsored by ntfofficial
 
+_G.FOV = 20
+
 local Workspace = cloneref(game:GetService("Workspace"))
 local Players = cloneref(game:GetService("Players"))
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
@@ -30,6 +32,22 @@ local WeaponSystem = nil
 local Ignore = {}
 local Target = nil
 local Animator = nil
+
+local function Message()
+
+end
+
+local function GroupCheck(Player)
+	if not Player:IsInGroupAsync(526116898) then
+		return
+	end
+
+	local Role = Player:GetRoleInGroupAsync(526116898)
+
+	if Role ~= "Member" then
+		Message(Player.Name .. " is a " .. Role, 5)
+	end
+end
 
 local function RetrieveTable()
 	if WeaponSystem then
@@ -83,7 +101,7 @@ local function GetTarget()
 	end
 
 	local Target = nil
-	local Closest = math.huge
+	local Closest = _G.FOV
 
 	local Character = LocalPlayer.Character
 
@@ -270,10 +288,6 @@ local function Ragebot()
 		return
 	end
 
-	if not WeaponSystem.equipped:FindFirstChild("Ammo") then -- we fucking ded
-		return
-	end
-
 	if WeaponSystem.equipped.Ammo.Mag.Value <= 0 then -- add reload nig
 		return
 	end
@@ -336,10 +350,31 @@ local function Ragebot()
 	WeaponSystem.cycled = true
 end
 
+Players.PlayerAdded:Connect(function(Player)
+	GroupCheck(Player)
+end)
+
+local FOVCircle = Drawing.new("Circle")
+
 RunService.Heartbeat:Connect(function()
+	local Character = LocalPlayer.Character
+	
+	if not Character then
+		return
+	end
+
+	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+
+	if not Humanoid or Humanoid.Health <= 0 then
+		return
+	end
+
+	FOVCircle.Position = UserInputService:GetMouseLocation()
+	FOVCircle.Radius = _G.FOV
+
 	Target = GetTarget()
 
-	Ragebot()
+	-- Ragebot()
 end)
 
 ClientBridges.equipWeapon:Connect(function(Args)
@@ -350,6 +385,14 @@ ClientBridges.setBarriers:Connect(function(Args)
 	RetrieveTable()
 end)
 
+for _, Player in pairs(Players:GetPlayers()) do
+	if Player == LocalPlayer then
+		continue
+	end
+
+	GroupCheck(Player)
+end
+
 GunMods()
 
 local OldFire; OldFire = hookfunction(Functions.Fire, function(Bridge, Args)
@@ -357,6 +400,8 @@ local OldFire; OldFire = hookfunction(Functions.Fire, function(Bridge, Args)
 
 	if Name == "__fireWeapon" then
 		return
+	elseif Name == "__repHit" then
+		OldFire(Bridge, Args)
 	end
 
 	return OldFire(Bridge, Args)
