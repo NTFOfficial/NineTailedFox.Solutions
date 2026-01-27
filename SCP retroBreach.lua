@@ -102,7 +102,7 @@ local function GetTarget()
 	end
 
 	local Target = nil
-	local Closest = _G.FOV / 2
+	local Closest = _G.FOV
 
 	local Character = LocalPlayer.Character
 
@@ -404,6 +404,7 @@ local OldFire; OldFire = hookfunction(Functions.Fire, function(Bridge, Args)
 	if Name == "__fireWeapon" then
 		return
 	elseif Name == "__repHit" then
+		OldFire(Bridge, Args)
 		OldFire(Bridge, Args)
 	end
 
