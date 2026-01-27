@@ -5,6 +5,7 @@ _G.FOV = 5
 local Workspace = cloneref(game:GetService("Workspace"))
 local Players = cloneref(game:GetService("Players"))
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local StarterGui = cloneref(game:GetService("StarterGui"))
 local RunService = cloneref(game:GetService("RunService"))
 local UserInputService = cloneref(game:GetService("UserInputService"))
 
@@ -63,20 +64,27 @@ local function SetupStamina(Character)
 	end
 end
 
-local function Message()
-
+local function Message(Text, Duration)
+	StarterGui:SetCore("SendNotification", {
+		Title = "Special role detected",
+		Text = Text
+	})
 end
 
 local function GroupCheck(Player)
-	--[[if not Player:IsInGroupAsync(526116898) then
+	if not Player then
+		return
+	end
+
+	if not Player:IsInGroupAsync(526116898) then
 		return
 	end
 
 	local Role = Player:GetRoleInGroupAsync(526116898)
 
 	if Role ~= "Member" then
-		Message(Player.Name .. " is a " .. Role, 5)
-	end]]
+		Message(Player.Name .. " is a " .. Role)
+	end
 end
 
 local function RetrieveTable()
@@ -449,6 +457,7 @@ local OldFire; OldFire = hookfunction(Functions.Fire, function(Bridge, Args)
 	if Name == "__fireWeapon" then
 		return
 	elseif Name == "__repHit" then
+		OldFire(Bridge, Args)
 		OldFire(Bridge, Args)
 	end
 
