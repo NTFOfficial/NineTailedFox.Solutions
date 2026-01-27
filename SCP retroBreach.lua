@@ -1,6 +1,6 @@
 -- Sponsored by ntfofficial
 
-_G.FOV = 20
+_G.FOV = 25
 
 local Workspace = cloneref(game:GetService("Workspace"))
 local Players = cloneref(game:GetService("Players"))
@@ -102,7 +102,7 @@ local function GetTarget()
 	end
 
 	local Target = nil
-	local Closest = _G.FOV
+	local Closest = _G.FOV / 2
 
 	local Character = LocalPlayer.Character
 
