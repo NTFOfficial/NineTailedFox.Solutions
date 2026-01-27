@@ -1,6 +1,6 @@
 -- Sponsored by ntfofficial
 
-_G.FOV = 25
+_G.FOV = 50
 
 local Workspace = cloneref(game:GetService("Workspace"))
 local Players = cloneref(game:GetService("Players"))
@@ -357,6 +357,7 @@ end)
 
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Visible = true
+FOVCircle.Color = Color3.fromRGB(255, 255, 255)
 
 RunService.Heartbeat:Connect(function()
 	local Character = LocalPlayer.Character
