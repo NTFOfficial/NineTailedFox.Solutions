@@ -47,7 +47,7 @@ local function SetupStamina(Character)
 	until Character:FindFirstChild("RunController")
 
 	for _, Connection in pairs(getconnections(Humanoid.Running)) do
-		local Function = getconnectionfunction(Connection)
+		local Function = Connection.Function
 
 		if not Function then
 			continue
