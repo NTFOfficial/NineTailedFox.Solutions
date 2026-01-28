@@ -15,6 +15,7 @@ local LocalPlayer = Players.LocalPlayer
 local Config = require(ReplicatedStorage.Config)
 local BridgeNet2 = require(ReplicatedStorage.Assets.Modules.BridgeNet2)
 local ClientBridges = {
+	["scpHandler"] = BridgeNet2.ClientBridge("SCPHandler"),
     ["repSound"] = BridgeNet2.ClientBridge("repSound"),
     ["repReload"] = BridgeNet2.ClientBridge("repReload"),
     ["repHit"] = BridgeNet2.ClientBridge("__repHit"),
@@ -64,7 +65,7 @@ local function SetupStamina(Character)
 	end
 end
 
-local function Message(Text, Duration)
+local function Message(Text)
 	StarterGui:SetCore("SendNotification", {
 		Title = "Special role detected",
 		Text = Text
@@ -388,6 +389,15 @@ local function Ragebot()
 	WeaponSystem.cycled = true
 end
 
+local function SelfRage()
+	if LocalPlayer:GetAttribute("Role") == "SCP-096" then
+		ClientBridges.scpHandler:Fire({
+			["Arg"] = "SeenFace",
+			["SCP"] = LocalPlayer
+		})
+	end
+end
+
 LocalPlayer.CharacterAdded:Connect(function(Character)
 	SetupStamina(Character)
 end)
@@ -437,6 +447,14 @@ ClientBridges.setBarriers:Connect(function(Args)
 	RetrieveTable()
 end)
 
+ClientBridges.scpHandler:Connect(function(Args)
+	if LocalPlayer:GetAttribute("Role") == "SCP-096" and Args.Arg == "SCP096Cooldown" then
+		task.wait(Args.Cooldown)
+
+		SelfRage()
+	end
+end)
+
 if LocalPlayer.Character then
 	SetupStamina(LocalPlayer.Character)
 end
@@ -450,11 +468,14 @@ for _, Player in pairs(Players:GetPlayers()) do
 end
 
 GunMods()
+SelfRage()
 
 local OldFire; OldFire = hookfunction(Functions.Fire, function(Bridge, Args)
 	local Name = Bridge._name
 
 	if Name == "__fireWeapon" then
+		return
+	elseif Name == "SCPHandler" and Args.SCP and Args.SCP ~= LocalPlayer then
 		return
 	elseif Name == "__repHit" then
 		OldFire(Bridge, Args)
